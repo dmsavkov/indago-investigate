@@ -4,7 +4,7 @@
 
 [▶ Demo video — add link when recorded]
 
-Python **3.12+** · Install with **pip** or **uv** · License: [Apache-2.0](LICENSE)
+Python **3.12+** · Install with **pip** or **uv** · License: [Apache-2.0](LICENSE) · Repo: [dmsavkov/indago-investigate](https://github.com/dmsavkov/indago-investigate)
 
 ---
 
