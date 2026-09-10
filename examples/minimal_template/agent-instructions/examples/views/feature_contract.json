@@ -1,0 +1,9 @@
+﻿{
+  "view_id": "feature_contract_v1",
+  "n_train": 400,
+  "n_serve": 410,
+  "online_in_serve_features": true,
+  "online_feature_version": "ov-1",
+  "batch_feature_version": "bf-1",
+  "extras": {}
+}

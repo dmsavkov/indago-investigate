@@ -1,0 +1,6 @@
+﻿{
+  "view_id": "infra_v1",
+  "latency_p95": 45.2,
+  "store_ping_ok": true,
+  "extras": {}
+}

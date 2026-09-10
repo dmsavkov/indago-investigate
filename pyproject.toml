@@ -36,6 +36,7 @@ packages = ["indago_investigate"]
 [tool.hatch.build.targets.sdist]
 include = [
     "indago_investigate",
+    "agent-instructions",
     "agent",
     "docs",
     "examples",

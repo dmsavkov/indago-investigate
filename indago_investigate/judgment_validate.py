@@ -88,12 +88,14 @@ def _pkg_agent_claim_tags() -> Path:
 
 
 def resolve_claim_tags_path(case_root: Path | None = None) -> Path | None:
-    """Prefer isolate/pack shared docs, then bundled package copy, then agent tree."""
+    """Prefer case agent-instructions, then isolate shared, then bundled package copy."""
     candidates: list[Path] = []
     if case_root is not None:
         root = Path(case_root)
         candidates.extend(
             [
+                root / "agent-instructions" / "claim_tags.json",
+                root / "agent" / "claim_tags.json",
                 root / "_shared" / "docs" / "claim_tags.json",
                 root.parent / "_shared" / "docs" / "claim_tags.json",
                 root.parent.parent / "f-cases" / "_shared" / "docs" / "claim_tags.json",
@@ -101,6 +103,11 @@ def resolve_claim_tags_path(case_root: Path | None = None) -> Path | None:
         )
     candidates.append(_bundled_claim_tags())
     candidates.append(_pkg_agent_claim_tags())
+    # package/agent-instructions next to installed package tree
+    try:
+        candidates.append(Path(__file__).resolve().parents[1] / "agent-instructions" / "claim_tags.json")
+    except IndexError:
+        pass
     for p in candidates:
         if p.is_file():
             return p

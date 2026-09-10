@@ -300,13 +300,18 @@ def main(argv: list[str] | None = None) -> None:
         print(json.dumps(payload, indent=2, default=str))
         raise SystemExit(2) from exc
     tool_name = args.command.replace("-", "_")
-    # L1/L2: JSON only under out/reports/. MD kept for validate-judgment critique.
-    also_md = args.command == "validate-judgment"
+    # L1/L2: JSON only under out/reports/. MD for critiques.
+    also_md = args.command in ("validate-judgment", "validate-views")
+    md_body = None
+    if also_md and isinstance(payload.get("critique"), str):
+        md_body = payload["critique"]
+    elif also_md and args.command == "validate-judgment":
+        md_body = _md_for(args.command, {**payload})
     write_report(
         tool_name,
         payload,
-        md_body=_md_for(args.command, {**payload}) if also_md else None,
-        write_md=also_md,
+        md_body=md_body,
+        write_md=also_md and md_body is not None,
     )
 
     # validate-judgment: print the human critique first (agent/human primary UX)
@@ -317,6 +322,9 @@ def main(argv: list[str] | None = None) -> None:
         return
 
     if args.command == "validate-views":
+        if isinstance(payload.get("critique"), str):
+            print(payload["critique"])
+            print("---")
         print(json.dumps(payload, indent=2, default=str))
         if not payload.get("ok"):
             raise SystemExit(1)
@@ -334,7 +342,10 @@ def main(argv: list[str] | None = None) -> None:
     keys = list(summary)[:14]
     print(json.dumps({k: summary[k] for k in keys}, indent=2, default=str))
 
-    if payload.get("ok") is False and payload.get("error_class") == "model_frame_mismatch":
+    if payload.get("ok") is False and payload.get("error_class") in (
+        "model_frame_mismatch",
+        "model_unloadable",
+    ):
         raise SystemExit(2)
     if payload.get("ok") is False and args.command in (
         "slice-summary",

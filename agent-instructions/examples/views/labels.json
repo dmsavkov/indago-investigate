@@ -1,0 +1,9 @@
+﻿{
+  "view_id": "label_v1",
+  "state": "absent",
+  "horizon_days": 30,
+  "lag_days": null,
+  "policy": null,
+  "counts": {},
+  "extras": {}
+}

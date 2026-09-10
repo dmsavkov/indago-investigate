@@ -1,0 +1,8 @@
+﻿{
+  "view_id": "queue_v1",
+  "channels": [
+    {"name": "inference", "lag": 12, "threshold": 60},
+    {"name": "tile", "lag": 5, "threshold": 120}
+  ],
+  "extras": {}
+}

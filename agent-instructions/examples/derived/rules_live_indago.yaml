@@ -1,0 +1,15 @@
+# INDAGO rules dialect — loadable by rules_eval.evaluate_authorize
+# Agent rewrites ugly/foreign rules into this shape under out/derived/
+version: example_v1
+pre_model:
+  - id: ofac_block
+    when: "context.get('ofac_hit') == True"
+    decision: DECLINE
+post_model:
+  - id: high_score_decline
+    when: "score >= 0.90"
+    decision: DECLINE
+  - id: mid_review
+    when: "score >= 0.50"
+    decision: REVIEW
+default_decision: APPROVE

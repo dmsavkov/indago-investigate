@@ -1,0 +1,16 @@
+﻿{
+  "view_id": "frame_ref_val_v1",
+  "frame_id": "events_ref_val",
+  "split": "ref_val",
+  "n_rows": null,
+  "n_cols": null,
+  "path_or_handle": "evidence/ref/data/val.parquet",
+  "column_roles": {
+    "score": "y_hat",
+    "slice_key": "entity_id",
+    "amount": "txn_amt"
+  },
+  "score_column": "y_hat",
+  "limitations": [],
+  "extras": {}
+}

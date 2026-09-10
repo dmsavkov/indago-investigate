@@ -1,0 +1,8 @@
+﻿{
+  "view_id": "monitor_suite_v1",
+  "checks": [
+    {"id": "pred_mean_shift", "status": "ALERT", "value_summary": "0.18", "threshold": 0.15, "message": "mean up"}
+  ],
+  "raw_ref_id": "monitor_snapshot",
+  "extras": {}
+}

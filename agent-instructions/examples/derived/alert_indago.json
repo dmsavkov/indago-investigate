@@ -1,0 +1,17 @@
+{
+  "schema": "indago_alert_v1",
+  "incident_id": "INC-EXAMPLE-001",
+  "fired_at": "2026-01-15T12:00:00Z",
+  "product": "payments",
+  "primary_metric": "pred_mean_shift",
+  "primary_status": "ALERT",
+  "window_n": 200,
+  "window_capacity": 250,
+  "co_fired": [
+    {"id": "psi_score", "status": "warn", "message": null},
+    {"id": "feature_null_rate", "status": "alert", "message": null}
+  ],
+  "decision_counts": {},
+  "raw_path": "alert.json",
+  "extras": {}
+}

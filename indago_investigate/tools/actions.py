@@ -417,11 +417,27 @@ def topk_importance(
 
     imp = get_importances(pkl_path=pkl)
     if not imp.get("ok"):
+        err = imp.get("error") or "importance extraction failed"
         out: dict[str, Any] = {
             "ok": False,
-            "error": imp.get("error") or "importance extraction failed",
+            "error": err,
             "model_path": str(pkl),
         }
+        # Load/env failures are hard investigation signals (not "unsupported method")
+        low = str(err).lower()
+        if any(
+            s in low
+            for s in (
+                "no module named",
+                "modulenotfound",
+                "cannot load",
+                "failed to load",
+                "unpickling",
+                "joblib",
+                "importerror",
+            )
+        ):
+            out["error_class"] = "model_unloadable"
         if imp.get("unsupported"):
             out["unsupported"] = True
             out["unsupported_reason"] = imp.get("unsupported_reason") or "no_native_importance"
@@ -562,14 +578,29 @@ def score_offline(
         parquet_abs=str(frame_path),
     )
     if not result.get("ok"):
+        err = result.get("error") or "score worker failed"
+        low = str(err).lower()
+        unloadable = any(
+            s in low
+            for s in (
+                "no module named",
+                "modulenotfound",
+                "cannot load",
+                "failed to load",
+                "unpickling",
+                "importerror",
+            )
+        )
         return {
             "ok": False,
-            "error_class": "model_frame_mismatch",
+            "error_class": "model_unloadable" if unloadable else "model_frame_mismatch",
             "frame": frame,
-            "error": result.get("error") or "score worker failed",
+            "error": err,
             "pkl": str(pkl),
             "hints": [
-                "Scorer/pipeline error — model may be mismatched for this frame",
+                "Model artifact failed to load — fix PKL/deps before treating scores as measured"
+                if unloadable
+                else "Scorer/pipeline error — model may be mismatched for this frame",
             ],
         }
     scores = result.get("scores") or result.get("values") or []

@@ -1,101 +1,130 @@
 # INDAGO
 
-**Decision-system investigation on a frozen evidence pack** — orient across data, scores, policy, and traffic; recommend inhibitors and next action class before labels arrive.
+**Offline investigation for ML / risk decision-system incidents** on a frozen evidence pack: bind columns via Views, run a plane-wise health audit, eliminate competing stories, and close with inhibitors plus an action class — before reliable labels arrive.
+
+Python **3.12+** · pip / uv · Apache-2.0 · [dmsavkov/indago-investigate](https://github.com/dmsavkov/indago-investigate)  
+Topics: `investigation` · `mlops` · `decision-systems` · `model-monitoring` · `python`
 
 [▶ Demo video — add link when recorded]
 
-Python **3.12+** · Install with **pip** or **uv** · License: [Apache-2.0](LICENSE) · Repo: [dmsavkov/indago-investigate](https://github.com/dmsavkov/indago-investigate)
+---
+
+## The problem
+
+Production ML and risk systems emit many signals: feature or label drift, failing cohorts, train–serve skew, score shifts, null spikes, approval-rate changes, rule diffs, configuration or baseline mismatch. An alert says *something* changed. It does not say whether the change is real degradation, expected mix shift, a serving bug, a policy change, or not enough evidence to say — or what you should **not** do next (for example, roll back a healthy model).
+
+INDAGO targets that middle step: **investigation under incomplete evidence**, especially before labels. Completeness means an honest status vector across decision-system planes — including **UNKNOWN** — plus competing hypotheses you can falsify, not a forced single root cause. Disposition, **inhibitors**, and next action class are first-class outcomes.
+
+**Not these:** not a finished fully autonomous closer; not a monitoring product by itself; not “run a checklist of checks” without judgment and inhibitors; not a real-time authorizer, L1 case UI, auto-retrain, or magic on an unlabeled lake with no map.
 
 ---
 
-## What this is (and isn’t)
-
-**Job.** You get an alert or KPI blip. Monitors show symptoms; case tools review single entities. Between them, teams still burn hours asking: data break, serve skew, model, rules, or mix shift? INDAGO runs that triangulation **offline** on a pack you freeze.
-
-**How it thinks.** Start with a **health audit** across decision-system planes. Every plane gets an honest status — including **UNKNOWN** when evidence is missing. Completeness means a truthful vector, not all-GREEN. The alert is a **rumor** until grounded. Disposition + **inhibitors** (e.g. don’t rollback the model when score parity is clean) are first-class outcomes.
-
-**Loop (one line).** Catalog → bind Views (paths + column roles) → health audit → targeted checks → judgment (`UNKNOWN` is a valid close).
-
-**Not this.** Not a real-time authorizer, not L1 case management UI, not auto-retrain, not a full lineage/CMDB product, not magic on an unlabeled lake with no map.
-
----
-
-## What you need (minimal pack)
+## Minimal pack
 
 | Required | Optional |
 |----------|----------|
-| Alert / KPI text or JSON | Rules snapshot |
-| CUR window (parquet/csv) | Labels / infra metrics |
-| REF window (parquet/csv) | `org-docs/` (short notes — vocabulary only) |
+| Alert / KPI (JSON or short text) | Rules snapshot |
+| CUR window (parquet/csv) | Labels / light infra metrics |
+| REF window (parquet/csv) | `org-docs/` (vocabulary notes only) |
 | **Trained model** (joblib/PKL) | — |
-| Column roles via peek → Views | — |
+| Column roles via Views | — |
 
 Layout: `evidence/live|ref/{data,models,rules}/`. Tools consume **Views**, not vendor JSON shapes.
 
-Cohort tools: use a bound **score column**, or **`--rescore`** with the model. A failed rescore (feature/schema mismatch) is itself a useful signal (`model_frame_mismatch`).
+- **Demo** — [`examples/demo_case/`](examples/demo_case/): synthetic CUR/REF + model + pre-bound Views + `agent-instructions/`.
+- **Template** — [`examples/minimal_template/`](examples/minimal_template/): empty evidence dirs + full `agent-instructions/` kit.
 
-Checklist: [`docs/minimal-pack.md`](docs/minimal-pack.md). Empty skeleton: [`examples/minimal_template/`](examples/minimal_template/). Runnable synthetic pack: [`examples/demo_case/`](examples/demo_case/).
+Checklist: [`docs/minimal-pack.md`](docs/minimal-pack.md).
 
 ---
 
-## Quick start
+## Start
+
+### Install
 
 ```bash
-# from this package directory (or a clone that is only this tree)
+# from this package directory (clone of indago-investigate)
 uv sync --extra score
 # or: pip install -e ".[score]"
-
-# smoke the synthetic demo (pre-bound Views)
-indago-catalog examples/demo_case
-indago-health-audit examples/demo_case --no-plots
-indago-investigate slice-summary examples/demo_case --key entity_id
-indago-investigate topk-importance examples/demo_case \
-  --model-path evidence/live/models/champion.pkl
 ```
 
-Your own pack:
+### Quick start (demo)
+
+```bash
+indago-catalog examples/demo_case
+# → out/catalog.md + catalog.json (present files on disk)
+
+indago-health-audit examples/demo_case --no-plots
+# → out/health_audit.md + .json (plane statuses; UNKNOWN allowed)
+
+indago-investigate validate-views examples/demo_case
+# → critique + out/reports/validate_views.*
+
+indago-investigate slice-summary examples/demo_case --key entity_id
+# → out/reports/slice_summary.json
+
+indago-investigate topk-importance examples/demo_case \
+  --model-path evidence/live/models/champion.pkl
+# → out/reports/topk_importance.json
+```
+
+Default bind is Views-required (`INDAGO_BIND=views`). Optional env: [`.env.example`](.env.example).
+
+### Your own pack
 
 ```bash
 cp -r examples/minimal_template my_case
 # add CUR/REF under evidence/live|ref/data/, model under evidence/live/models/
 # edit my_case/alert.json
-# agent: open my_case, follow agent/ACTIVATION.md (or paste it)
+# open my_case/agent-instructions/README.md (then ACTIVATION.md)
 indago-catalog my_case
 # peek-frame → author out/views/ → validate-views → health-audit → …
 ```
 
-Default bind is Views-required (`INDAGO_BIND=views`). Optional env knobs: [`.env.example`](.env.example).
+The template already contains `agent-instructions/` (protocol, claim tags, View examples). You do not need a shared docs mount.
 
 ---
 
 ## How it works
 
 1. **Inventory** — `indago-catalog` lists what is on disk.  
-2. **Bind** — author small View sidecars under `out/views/` (paths + `column_roles`); `validate-views`.  
+2. **Bind** — author View sidecars under `out/views/` (paths + `column_roles`); `validate-views`.  
 3. **Orient** — `indago-health-audit` (path-only Views → partial audit + loud missings).  
-4. **Discriminate** — L1/L2 tools where survivors need them (profile, drift, score-offline, slice, policy replay, …).  
+4. **Discriminate** — L1/L2 tools where survivors need them.  
 5. **Close** — `out/judgment.md` + `out/judgment_struct.json`; `validate-judgment`.
 
-| Path | Audience |
-|------|----------|
-| [`agent/`](agent/) | Agent protocol (ACTIVATION, tools, philosophy) |
-| [`docs/`](docs/) | Views contract, thresholds, minimal-pack, examples |
-| [`docs/ops-flash.md`](docs/ops-flash.md) | Lab isolate flash/harvest (monorepo operators only) |
+### Case layout
+
+```text
+my_case/
+  alert.json
+  evidence/live|ref/{data,models,rules}/
+  agent-instructions/     # protocol SoT for this case
+  org-docs/               # optional
+  out/
+    catalog.*
+    views/                # you author
+    health_audit.*
+    reports/              # tool JSON (+ critiques)
+    judgment.md
+    judgment_struct.json
+```
 
 ---
 
-## Example output
+## Example
 
-Full ledgers are long by design. Prefer a short demo recording that scrolls `out/health_audit.md` and the judgment scorecard.
+*(Screenshot slot: alert ‖ judgment horizontal — drop file at `docs/assets/alert-judgment.png` when ready.)*
 
-On `examples/demo_case`, after smoke you should see `out/catalog.*` and `out/health_audit.*` with honest UNKNOWNs where optional evidence is absent.
+Full ledgers are long by design. On the demo, expect honest UNKNOWNs where optional evidence is absent — that is success, not failure.
 
 ---
 
 ## Feedback
 
-- GitHub Issues on the project repo  
-- Email / design-partner walkthrough on a **thin** pack welcome — we do not need your full warehouse  
+- [GitHub Issues](https://github.com/dmsavkov/indago-investigate/issues)
+- Telegram: [@dmsavkov](https://t.me/dmsavkov)
+- Thin sanitized packs and design-partner walkthroughs welcome — we do not need your warehouse
 
 ---
 
