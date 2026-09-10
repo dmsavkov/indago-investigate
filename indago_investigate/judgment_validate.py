@@ -83,8 +83,8 @@ def _bundled_claim_tags() -> Path:
 
 
 def _pkg_agent_claim_tags() -> Path:
-    # editable layout: package/agent/claim_tags.json
-    return Path(__file__).resolve().parents[1] / "agent" / "claim_tags.json"
+    # editable / sdist layout: package/agent-instructions/claim_tags.json
+    return Path(__file__).resolve().parents[1] / "agent-instructions" / "claim_tags.json"
 
 
 def resolve_claim_tags_path(case_root: Path | None = None) -> Path | None:

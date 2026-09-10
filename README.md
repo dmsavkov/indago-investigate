@@ -70,6 +70,24 @@ indago-investigate topk-importance examples/demo_case \
 
 Default bind is Views-required (`INDAGO_BIND=views`). Optional env: [`.env.example`](.env.example).
 
+### Try an investigation on the demo
+
+The demo already has alert, CUR/REF, a loadable sklearn model, and pre-bound Views — enough to watch the loop end-to-end (not just smoke CLIs).
+
+```bash
+# Open the case protocol (host: attach this folder / paste ACTIVATION)
+#   examples/demo_case/agent-instructions/README.md
+
+cd examples/demo_case
+indago-catalog .
+indago-investigate validate-views .
+indago-health-audit . --no-plots
+# read out/health_audit.md — note UNKNOWN planes and the score-shift story
+indago-investigate emit-judgment . --terminal INSUFFICIENT_EVIDENCE --action monitor_only
+indago-investigate validate-judgment .
+# then fill claims in out/judgment_* using agent-instructions/claim_tags.json
+```
+
 ### Your own pack
 
 ```bash
