@@ -1,0 +1,10 @@
+{
+  "schema": "indago_alert_v1",
+  "incident_id": "case-001",
+  "primary_metric": "your_kpi_or_monitor_id",
+  "primary_status": "ALERT",
+  "window_n": null,
+  "window_capacity": null,
+  "message": "Replace with the rumor symptom. Alert is not root cause.",
+  "co_fired": []
+}

@@ -1,0 +1,9 @@
+﻿{
+  "view_id": "baseline_card_v1",
+  "card_id": "card_neutral",
+  "pred_mean_val": 0.12,
+  "rules_bundle_hash": "abc123",
+  "raw_ref_id": "monitor_baseline",
+  "threshold_digest": {"pred_mean_delta": 0.05},
+  "extras": {"raw_path": "evidence/monitor_baseline.json"}
+}

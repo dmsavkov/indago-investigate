@@ -1,0 +1,19 @@
+{
+  "view_id": "frame_ref_val_v1",
+  "frame_id": "events_ref_val",
+  "split": "ref_val",
+  "n_rows": 60,
+  "path_or_handle": "evidence/ref/data/val.parquet",
+  "column_roles": {
+    "score": "y_hat",
+    "decision": "decision",
+    "slice_key": "entity_id",
+    "amount": "amt",
+    "product": "product_code"
+  },
+  "score_column": "y_hat",
+  "limitations": [
+    "synthetic demo"
+  ],
+  "extras": {}
+}

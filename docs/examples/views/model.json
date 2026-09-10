@@ -1,0 +1,10 @@
+﻿{
+  "view_id": "model_v1",
+  "artifact_available": true,
+  "registry_version": 3,
+  "alias": "champion",
+  "path_or_handle": "evidence/live/models/champion.pkl",
+  "feature_cols_ref": "evidence/live/models/feature_cols.json",
+  "limitations": [],
+  "extras": {}
+}

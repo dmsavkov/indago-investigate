@@ -1,0 +1,16 @@
+{
+  "schema": "indago_alert_v1",
+  "incident_id": "demo-001",
+  "primary_metric": "decline_rate",
+  "primary_status": "ALERT",
+  "window_n": 40,
+  "window_capacity": 100,
+  "message": "Demo rumor: decline rate up \u2014 investigate before acting.",
+  "co_fired": [
+    {
+      "id": "score_mean_shift",
+      "status": "WARN",
+      "message": "mean score higher than ref"
+    }
+  ]
+}

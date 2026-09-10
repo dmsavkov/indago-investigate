@@ -1,0 +1,19 @@
+{
+  "view_id": "frame_cur_v1",
+  "frame_id": "events_cur",
+  "split": "cur",
+  "n_rows": 40,
+  "path_or_handle": "evidence/live/data/events_cur.parquet",
+  "column_roles": {
+    "score": "y_hat",
+    "decision": "decision",
+    "slice_key": "entity_id",
+    "amount": "amt",
+    "product": "product_code"
+  },
+  "score_column": "y_hat",
+  "limitations": [
+    "synthetic demo"
+  ],
+  "extras": {}
+}

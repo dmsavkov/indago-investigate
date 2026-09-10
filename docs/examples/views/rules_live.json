@@ -1,0 +1,11 @@
+﻿{
+  "view_id": "rules_live_v1",
+  "bundle_id": "rules_live",
+  "bundle_hash": null,
+  "source": "live",
+  "path_or_handle": "out/derived/rules_live_indago.yaml",
+  "extras": {
+    "raw_path": "evidence/live/rules/live_policy.json",
+    "rewrite": "agent"
+  }
+}

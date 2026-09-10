@@ -1,0 +1,48 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+.env/
+.tmp/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Local env (keep .env.example)
+.env
+.env.local
+*.env
+!.env.example
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Case working output (keep templates & demo Views)
+examples/*/out/catalog.*
+examples/*/out/health_audit.*
+examples/*/out/reports/
+examples/*/out/plots/
+examples/*/playground/**
+!examples/**/.gitkeep
+
+# Demo model is tracked (small sklearn LR); ignore other pickles under examples
+examples/**/*.pkl
+!examples/demo_case/evidence/live/models/champion.pkl
