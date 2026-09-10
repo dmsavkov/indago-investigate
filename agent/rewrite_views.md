@@ -1,10 +1,10 @@
 # Evidence rewrite — ugly customer shapes → INDAGO derived + Views
 
-Tools do **not** JSONPath into arbitrary customer nests. When alert or rules are messy, rewrite once into `out/derived/`, then author thin Views. Skeletons: `_shared/docs/examples/derived/`.
+Tools do **not** JSONPath into arbitrary customer nests. When alert or rules are messy, rewrite once into `out/derived/`, then author thin Views. Skeletons: `docs/examples/derived/` when present.
 
 Skip derived only when raw is already loadable / already maps to the View field names below.
 
-Do **not** invent thresholds (use `_shared/docs/thresholds.md`). Do **not** plant `manifest.json` role_hints. `evidence_manifest.json` is a flash **receipt** only — discover models/frames via catalog paths, not receipt flags.
+Do **not** invent thresholds (use `docs/thresholds.md`). Do **not** plant `manifest.json` role_hints. `evidence_manifest.json` is a flash **receipt** only — discover models/frames via catalog paths, not receipt flags.
 
 **Trimmed contact layout (humans):** `evidence/live/{data,models,rules}/` vs `evidence/ref/{data,models,rules}/`. Views still bind concrete paths (e.g. `evidence/live/data/events_cur.parquet`). Foreign live rules JSON → `out/derived/rules_live_indago.yaml` before RulesView.
 
