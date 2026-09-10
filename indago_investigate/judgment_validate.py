@@ -324,7 +324,7 @@ def _explain_error(err: str) -> list[str]:
         lines.append(f"**Problem:** {err}")
         lines.append("")
         lines.append(
-            "**Fix:** Drop free-text `claim`. Use a closed `tag` from `_shared/docs/claim_tags.json` "
+            "**Fix:** Drop free-text `claim`. Use a closed `tag` from `agent/claim_tags.json` "
             "plus `status`. Put prose in `judgment.md` or a short `summary` field if you must."
         )
         return lines
@@ -346,7 +346,7 @@ def _explain_error(err: str) -> list[str]:
         lines.append(f"**Problem:** {err}")
         lines.append("")
         lines.append(
-            "**Fix:** Open `_shared/docs/claim_tags.json` (or `package/agent/claim_tags.json`) and "
+            "**Fix:** Open `agent/claim_tags.json` (shipped with this package) and "
             "pick the nearest mechanism/meta tag. Do not invent new tag strings."
         )
         return lines
@@ -455,7 +455,7 @@ def build_critique(
         lines.append("2. Re-run: `indago-investigate validate-judgment .`")
         lines.append("3. Repeat until **Result: OK**. Do not treat the investigation as closed while FAIL.")
     lines.append("")
-    lines.append("Allowed tags/statuses: `_shared/docs/claim_tags.json`.")
+    lines.append("Allowed tags/statuses: `agent/claim_tags.json` (bundled with the package).")
     lines.append("")
     return "\n".join(lines)
 

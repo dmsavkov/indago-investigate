@@ -73,6 +73,25 @@ def profile_table(*, frame: str = "cur", top_nulls: int = 25) -> dict[str, Any]:
     # Drop flag columns from high_zero_mass — they invert semantics
     flag_cols = {f["col"] for f in flag_notes}
     zero_mass = [z for z in zero_mass if z["col"] not in flag_cols]
+    # Prefer Views roles (y_hat / score / …) over IEEE folklore column names
+    score_name = None
+    decision_name = None
+    try:
+        from indago_investigate.role_cols import role_column
+
+        io = get_case_io()
+        split = "cur" if frame == "cur" else frame
+        score_name = role_column(io.case_root, "score", split=split)
+        decision_name = role_column(io.case_root, "decision", split=split)
+    except Exception:
+        pass
+    if not score_name:
+        for cand in ("prediction", "y_hat", "score", "y_pred"):
+            if cand in df.columns:
+                score_name = cand
+                break
+    if not decision_name:
+        decision_name = "decision" if "decision" in df.columns else None
     return {
         "frame": frame,
         "n_rows": n,
@@ -81,8 +100,10 @@ def profile_table(*, frame: str = "cur", top_nulls: int = 25) -> dict[str, Any]:
         "top_nulls": null_rates[:top_nulls],
         "high_zero_mass": zero_mass[:top_nulls],
         "boolean_flag_rates": flag_notes,
-        "has_prediction": "prediction" in df.columns,
-        "has_decision": "decision" in df.columns,
+        "has_prediction": bool(score_name and score_name in df.columns),
+        "has_decision": bool(decision_name and decision_name in df.columns),
+        "score_column": score_name if score_name in df.columns else None,
+        "decision_column": decision_name if decision_name in df.columns else None,
         "naming_note": (
             "high_zero_mass = fraction of numeric values == 0. "
             "For online_velocity_zero_at_fetch use boolean_flag_rates.true_rate "

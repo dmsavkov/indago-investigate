@@ -6,14 +6,14 @@
 2. The first path argument is always the **case root** (folder with `alert.json`). Prefer `.` when your shell is already in that folder; otherwise use an **absolute** path. Never pass a bare case id.
 3. Catalog / reports are **computed** by these CLIs into `out/` — nothing is pre-built at flash except evidence + docs.
 4. **Allowlist only.** The tables below are the _only_ investigation commands you may run. If another `indago-*` binary exists on PATH (`indago-ops-eval`, `indago-validate-pack`, `indago-score`, `indago-run`, `indago-tournament`, `indago-view`, …), **ignore it** — those are parent/lab tools, not for this case. Do not search the host for “more tools.”
-5. Confirm the live menu with `indago-investigate --list`. It must include `validate-judgment`, `validate-views`, and `peek-frame`. If it does not, stop and tell the operator the PATH CLI is stale (they must re-run `uv tool install -e . --force` from the main indago repo).
+5. Confirm the live menu with `indago-investigate --list`. It must include `validate-judgment`, `validate-views`, and `peek-frame`. If it does not, stop and tell the operator the PATH CLI is stale (re-install from this package: `uv sync --extra score` or `pip install -e ".[score]"`).
 6. **Never delete `out/judgment*`.** Investigation CLIs only _create_ files under `out/` — they do **not** wipe `out/`. Do not browse other case folders for prior runs.
 
-You only need the investigation tools below. Evidence is **case-local** under `evidence/`. Optional `org-docs/` is human vocabulary (read if present — useful, not complete). Author Views from `_shared/docs/views_contract.md` before audit/L1. Path-only Frames → **partial** HA; filled `column_roles` → full planes. Catalog / peek / validate-alert work first. **Never** run ops bind.
+You only need the investigation tools below. Evidence is **case-local** under `evidence/`. Optional `org-docs/` is human vocabulary (read if present — useful, not complete). Author Views from `docs/views_contract.md` before audit/L1. Path-only Frames → **partial** HA; filled `column_roles` → full planes. Catalog / peek / validate-alert work first. **Never** run ops bind.
 
 **Suggested capability loop:** catalog → rewrite ugly alert/rules into `out/derived/` when needed (see ACTIVATION) → path-only Views + validate-views → health-audit (read missings) → **peek-frame (real column names)** → **topk-importance --model-path …** (writes ranks HA will use) → fill `column_roles` (score/slice/decision/…) → re-audit → L1/L2 → validate-judgment.
 
-Skeletons: `_shared/docs/examples/derived/` (`alert_indago.json`, `rules_live_indago.yaml`) and `examples/views/`. Field tables: `_shared/docs/rewrite_views.md`. Thresholds: `_shared/docs/thresholds.md` (package defaults — do not invent).
+Skeletons: `docs/examples/derived/` when present (`alert_indago.json`, `rules_live_indago.yaml`) and `docs/examples/views/`. Field tables: `docs/rewrite_views.md` or `agent/rewrite_views.md`. Thresholds: `docs/thresholds.md` (package defaults — do not invent).
 
 **What to open:** `out/catalog.md` and `out/health_audit.md` for orientation. After an L1/L2 tool, open **`out/reports/<tool>.json`** (structured result). Do not expect `.md` twins for those tools. Close twin remains `judgment.md` + `judgment_struct.json`.
 

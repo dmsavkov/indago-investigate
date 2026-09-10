@@ -2,7 +2,7 @@
 
 Paste **once** at the start of an isolate Cursor run. Not a repeating system message.
 
-Docs for this run: `_shared/docs/README.md` → `tools.md`, `glossary.md`, `claim_tags.json`, `philosophy.md`, `views_contract.md`, `rewrite_views.md`, and when present `thresholds.md`.
+Docs for this run: `agent/` (`ACTIVATION.md`, `tools.md`, `glossary.md`, `claim_tags.json`, `philosophy.md`) and `docs/` (`views_contract.md`, `rewrite_views.md`, `thresholds.md`, `minimal-pack.md`).
 
 ---
 
@@ -13,9 +13,9 @@ Docs for this run: `_shared/docs/README.md` → `tools.md`, `glossary.md`, `clai
 - Evidence: `{{CASE_ROOT}}/evidence/` (case-local only)
 - Optional human docs: `{{CASE_ROOT}}/org-docs/` (if present — useful, not guaranteed complete)
 - Write under `{{CASE_ROOT}}/out/` · scratch under `{{CASE_ROOT}}/playground/`
-- CLI menu: `_shared/docs/tools.md`
-- Views shapes: `_shared/docs/views_contract.md` (+ `examples/views/` under docs)
-- **Rewrite field tables:** `_shared/docs/rewrite_views.md` (+ `examples/derived/`)
+- CLI menu: `agent/tools.md`
+- Views shapes: `docs/views_contract.md` (+ `docs/examples/views/` when present)
+- **Rewrite field tables:** `docs/rewrite_views.md` (or `agent/rewrite_views.md`) (+ `docs/examples/derived/` when present)
 
 `out/` starts empty of judgments. Catalog is **not** pre-built. Flash leaves `out/views/` empty — **you author Views**. Never run ops ieee bind. `evidence_manifest.json` is a flash receipt only — discover assets from catalog paths.
 
@@ -25,23 +25,23 @@ An ML monitor fired. Investigate the system, not only the ticket metric. The pri
 
 ## Evidence rewrite (when shapes are ugly)
 
-Tools do **not** JSONPath into arbitrary customer nests. If alert or rules are messy, rewrite once — full field tables in `_shared/docs/rewrite_views.md`:
+Tools do **not** JSONPath into arbitrary customer nests. If alert or rules are messy, rewrite once — full field tables in `docs/rewrite_views.md` / `agent/rewrite_views.md`:
 
 1. **Alert** → `out/derived/alert_indago.json` then thin `out/views/alert.json` (`extras.derived_path` / `raw_path`).
 2. **Rules (policy in scope)** → `out/derived/rules_live_indago.yaml` then `out/views/rules_live.json` pointing at it.
 3. Skip derived only when raw already matches those schemas.
-4. Skeletons: `_shared/docs/examples/derived/`.
+4. Skeletons: `docs/examples/derived/` when present.
 
-Do not invent thresholds (`thresholds.md`). Do not plant role_hints.
+Do not invent thresholds (`docs/thresholds.md`). Do not plant role_hints.
 
 ## Constraints
 
 - Do not invent metrics, files, merchants, or causes.
 - Missing evidence → say unavailable and list what you would need.
 - Cite real paths (and column/key names for slice/feature claims).
-- Claim tags: only those in `_shared/docs/claim_tags.json`.
-- Run only investigation CLIs in `tools.md`. Do not flash, harvest, score, or open gold.
-- **Allowlist:** only CLIs in `_shared/docs/tools.md`. Ignore other `indago-*` on PATH.
+- Claim tags: only those in `agent/claim_tags.json`.
+- Run only investigation CLIs in `agent/tools.md`. Do not flash, harvest, score, or open gold.
+- **Allowlist:** only CLIs in `agent/tools.md`. Ignore other `indago-*` on PATH.
 - Confirm `indago-investigate --list` includes `validate-judgment` before closing; if missing, PATH is stale — stop and report to operator.
 - Do **not** delete or empty `out/`. Do not browse sibling case folders for prior answers.
 - **Case argument:** `.` when cwd is `{{CASE_ROOT}}`, else absolute path to that folder. Never a bare case id.
@@ -56,7 +56,7 @@ Use tools when you need the capability. Order below is a **suggested** pedagogy;
 | **Inventory** | `indago-catalog .` → read `out/catalog.md`. (`evidence_manifest.json` is a flash receipt, not the working catalog.) |
 | **Rewrite ugly alert/rules** | If needed: `out/derived/alert_indago.json` and/or `out/derived/rules_live_indago.yaml` → then author Views (see **Evidence rewrite** above). |
 | **First orientation (partial)** | Author **path-only** FrameViews (`path_or_handle` set; `column_roles` may be empty) from catalog paths → `validate-views` → `indago-health-audit . --profile ieee_flash`. Read UNKNOWN planes + `missing_roles` / hints in **`out/health_audit.md`**. |
-| **Learn shapes** | Read `_shared/docs/views_contract.md` + `examples/views/`. |
+| **Learn shapes** | Read `docs/views_contract.md` + `docs/examples/views/` when present. |
 | **Choose columns (required skill)** | `peek-frame` the CUR (and REF) table: list real column names. Prefer score-like cols (`risk_score`, `prediction`, `y_hat`, `score`, …) — do **not** assume a single folklore name. Bind `slice_key` / `product` / `amount` / `decision` / `policy_hash` from what you peeked. Optional org-docs = vocabulary only. |
 | **Importances (agent-owned)** | Run `topk-importance . --model-path <catalog-pkl>` (or `--importance-path`) **before** treating feature-plane gain×PSI as authoritative. Health-audit reads `out/reports/topk_importance.json` only — it does **not** silently load the PKL for ranks. Native attrs only; `unsupported` if none. |
 | **Bind roles** | Fill `column_roles` on Views → `validate-views` again. Without score/slice roles, population/model/decision planes stay UNKNOWN — that is incomplete work, not a finished case. |

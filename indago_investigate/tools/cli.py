@@ -218,7 +218,7 @@ def main(argv: list[str] | None = None) -> None:
         for name, meta in sorted(COMMANDS.items(), key=lambda x: (x[1]["level"], x[0])):
             print(f"  {meta['level']:3}  indago-investigate {name} <case_root>")
         print("\nAlso allowed: indago-catalog | indago-health-audit")
-        print("Optional (ops/dogfood only): indago-materialize | indago-ops-bind-ieee — not the agent path")
+        print("Optional (ops/dogfood only): indago-materialize — not the agent path")
         print("Do not run other indago-* binaries (ops/lab) during investigation.")
         if not args.command:
             return
