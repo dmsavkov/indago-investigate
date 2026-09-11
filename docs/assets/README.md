@@ -2,7 +2,7 @@
 
 | File | Use |
 |------|-----|
-| `alert-judgment.png` | README Example — alert ‖ judgment screenshot |
-| `indago-demo.mp4` | README demo walkthrough (~22 MB) |
+| `alert-judgment.png` | README Example — inline on GitHub |
+| `indago-demo.mp4` | Also on the [`demo-media`](https://github.com/dmsavkov/indago-investigate/releases/tag/demo-media) release for README playback |
 
-PNG renders inline on GitHub. The MP4 is linked from the README; open the file on github.com to play, or use a Release asset URL for a more reliable inline player.
+PNG uses a relative markdown image. The demo MP4 is linked via the release download URL so GitHub can render a player more reliably than a relative repo path.
