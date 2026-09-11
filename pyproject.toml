@@ -1,4 +1,4 @@
-﻿[project]
+[project]
 name = "indago-investigate"
 version = "0.1.0"
 description = "Evidence-constrained investigation CLIs (catalog, health audit, L0–L2 tools)"

@@ -34,11 +34,13 @@ Short reference. Not a routing FSM.
 | Status | Use when |
 | --- | --- |
 | `supported` / `associated` | This tag **is** (part of) the primary mechanism. On **forbidden** tags, both statuses are Layer A **hard fails** (same as overclaim). |
-| `falsified` / `falsified_as_primary` | This tag is **eliminated** as primary RCA (e.g. healthy model plane) |
-| `unknown` | Cannot decide this tag from evidence |
-| `weakened` / `not_claimed` | Soft / absent |
+| `falsified` / `falsified_as_primary` | This tag is **eliminated** as primary RCA — only after a **discriminating** measurement against that mechanism (e.g. healthy model plane from a successful load + orientation) |
+| `unknown` | Cannot decide this tag from evidence — **default** when you lack a discriminating measurement |
+| `weakened` / `not_claimed` | Soft / absent; use when evidence leans against the tag but does not fully eliminate it |
 
-Wrong polarity example: marking `model_artifact` as `supported` because “model is green” — gold usually wants `falsified_as_primary`.
+**Harden elimination:** Missing tool, unloadable PKL, empty report, or “I did not run the check” is **not** falsification. Prefer `unknown` (or `weakened` if partial). Example: PKL present but unloadable → `model_artifact` stays `unknown`, not `falsified_as_primary`.
+
+Wrong polarity example: marking `model_artifact` as `supported` because “model is green” — gold usually wants `falsified_as_primary` **after** a successful model-plane check.
 
 **Closed enums:** `decision.terminal` and `decision.action_class` must be glossary/gold vocabulary. Unknown values → schema hard fail (`validate-judgment` / Layer A).
 

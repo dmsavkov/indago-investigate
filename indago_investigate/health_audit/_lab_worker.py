@@ -9,6 +9,8 @@ import joblib
 import numpy as np
 import pandas as pd
 
+from indago_investigate.model_io import load_model_artifact
+
 
 def _unwrap_estimator(model):
     pipe = model.base_estimator if hasattr(model, "base_estimator") else model
@@ -162,7 +164,7 @@ def cmd_importances(payload: dict) -> dict:
             "unsupported_reason": "no_permutation",
             "model_family_guess": None,
         }
-    model = joblib.load(payload["pkl"])
+    model = load_model_artifact(payload["pkl"])
     extracted = _extract_importances(model)
     if not extracted.get("ok"):
         return extracted
@@ -183,7 +185,7 @@ def cmd_importances(payload: dict) -> dict:
 
 
 def cmd_score(payload: dict) -> dict:
-    model = joblib.load(payload["pkl"])
+    model = load_model_artifact(payload["pkl"])
     pipe = model.base_estimator if hasattr(model, "base_estimator") else model
     cal = model if hasattr(model, "base_estimator") else None
     df = pd.read_parquet(payload["parquet"])
@@ -234,7 +236,7 @@ def cmd_score(payload: dict) -> dict:
 
 def cmd_explain(payload: dict) -> dict:
     """Local LGBM pred_contrib (TreeSHAP-equivalent) for selected row indices."""
-    model = joblib.load(payload["pkl"])
+    model = load_model_artifact(payload["pkl"])
     pipe = model.base_estimator if hasattr(model, "base_estimator") else model
     if _pipeline_kind(pipe) != "v3_lgbm_categorical":
         return {"ok": False, "error": "explain only supported for v3_lgbm_categorical pipeline"}
@@ -268,7 +270,7 @@ def cmd_explain(payload: dict) -> dict:
 
 def cmd_ablate(payload: dict) -> dict:
     """Knock out one feature per row and re-score. Modes: zero, median_val."""
-    model = joblib.load(payload["pkl"])
+    model = load_model_artifact(payload["pkl"])
     pipe = model.base_estimator if hasattr(model, "base_estimator") else model
     cal = model if hasattr(model, "base_estimator") else None
     df = pd.read_parquet(payload["parquet"])

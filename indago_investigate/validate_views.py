@@ -122,40 +122,62 @@ def _role_names(val: Any) -> list[str]:
     return []
 
 
-def _try_load_model(path: Path) -> str | None:
-    """Return error string if model cannot be loaded; None if load_ok."""
+def _try_load_model(path: Path) -> tuple[str, str] | None:
+    """Probe-load model. Return ``(severity, detail)`` on failure; None if load_ok.
+
+    Severity:
+    - ``error`` — broken env/artifact (blocks Views gate / L1).
+    - ``warn`` — transient resource failure such as ``MemoryError`` (does **not**
+      block frame-only L1; score tools may still fail later). Peek-model can succeed
+      when RAM is free even if a prior gate hit OOM.
+    """
     try:
-        import joblib
+        from indago_investigate.model_io import load_model_artifact
 
-        joblib.load(path)
+        # Discard immediately — gate only needs loadability, not a live estimator.
+        _ = load_model_artifact(path)
+        del _
         return None
+    except MemoryError as exc:
+        return (
+            "warn",
+            f"MemoryError while loading {path.name}: {exc or '(out of memory)'}. "
+            "Artifact may still be valid — retry peek-model alone or free RAM. "
+            "Do not treat this as a corrupt PKL; do not falsify model_artifact from OOM alone.",
+        )
     except Exception as exc:  # noqa: BLE001
-        return f"{type(exc).__name__}: {exc}"
+        return ("error", f"{type(exc).__name__}: {exc}")
 
 
-def _check_model_file(case_root: Path, data: dict[str, Any]) -> list[str]:
+def _check_model_file(case_root: Path, data: dict[str, Any]) -> tuple[list[str], list[str]]:
+    """Return (errors, warnings) for a ModelView JSON payload."""
     errors: list[str] = []
+    warns: list[str] = []
     try:
         mv = ModelView.model_validate(data)
     except Exception as exc:  # noqa: BLE001
-        return [f"ERROR model schema: {exc}"]
+        return [f"ERROR model schema: {exc}"], warns
     if not mv.path_or_handle:
-        return errors
+        return errors, warns
     try:
         path = jail_resolve(case_root, mv.path_or_handle)
     except PathJailError as exc:
         errors.append(f"ERROR model: {exc}")
-        return errors
+        return errors, warns
     if not path.is_file():
         errors.append(f"ERROR model: path not a file: {mv.path_or_handle}")
-        return errors
-    load_err = _try_load_model(path)
-    if load_err:
-        errors.append(
-            f"ERROR model: artifact at {mv.path_or_handle!r} does not load ({load_err}). "
-            "Fix the PKL / install scoring deps, or clear ModelView until a loadable model is available."
-        )
-    return errors
+        return errors, warns
+    load_fail = _try_load_model(path)
+    if load_fail:
+        severity, detail = load_fail
+        if severity == "warn":
+            warns.append(f"WARN model: {detail}")
+        else:
+            errors.append(
+                f"ERROR model: artifact at {mv.path_or_handle!r} does not load ({detail}). "
+                "Fix the PKL / install scoring deps, or clear ModelView until a loadable model is available."
+            )
+    return errors, warns
 
 
 def validate_views(
@@ -213,7 +235,9 @@ def validate_views(
             warnings.extend(w)
             roles_resolved[data.get("view_id") or path.stem] = data.get("column_roles") or {}
         elif data.get("view_id", "").startswith("model") or "artifact_available" in data:
-            errors.extend(_check_model_file(root, data))
+            e, w = _check_model_file(root, data)
+            errors.extend(e)
+            warnings.extend(w)
         elif path.name == "bundle.json":
             # already checked
             frames = data.get("frames") or []
@@ -225,7 +249,9 @@ def validate_views(
                     roles_resolved[fr.get("view_id") or "frame"] = fr.get("column_roles") or {}
             model = data.get("model")
             if isinstance(model, dict):
-                errors.extend(_check_model_file(root, model))
+                e, w = _check_model_file(root, model)
+                errors.extend(e)
+                warnings.extend(w)
 
     return _result(root, vdir, errors, warnings, roles_resolved, paths_opened, strict)
 
@@ -325,6 +351,16 @@ def _build_critique(ok: bool, errors: list[str], warnings: list[str]) -> str:
                 lines.append(
                     "**Fix:** Bind `column_roles.score` to the actual score/prediction column "
                     "(distinct from amount)."
+                )
+            elif "MemoryError" in w:
+                lines.append(
+                    "**Why it matters:** OOM during a probe-load is environment pressure, not proof "
+                    "the PKL is corrupt. Frame-only L1 should still run; score/offline tools may need a retry."
+                )
+                lines.append("")
+                lines.append(
+                    "**Fix:** Retry `peek-model` alone; close other heavy processes; do not mark "
+                    "`model_artifact` falsified or unloadable from MemoryError alone."
                 )
             else:
                 lines.append("**Fix:** Bind missing roles when evidence supports them; else expect UNKNOWN planes.")

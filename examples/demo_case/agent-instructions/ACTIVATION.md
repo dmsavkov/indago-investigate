@@ -61,10 +61,10 @@ Use tools when you need the capability. Order below is a **suggested** pedagogy;
 | **First orientation (partial)** | Author **path-only** FrameViews → `validate-views` → `indago-health-audit . --no-plots`. Read UNKNOWN planes + missings. |
 | **Learn shapes** | Read `views_contract.md` + `examples/views/`. |
 | **Choose columns** | `peek-frame` tables you will bind: list real column names. Prefer score-like cols distinct from amount. Bind `slice_key` / `product` / `amount` / `decision` / `score` from what you peeked. |
-| **Importances** | `topk-importance . --model-path <catalog-pkl>` (or `--importance-path`) before treating feature-plane ranks as authoritative. |
+| **Importances** | `topk-importance . --model-path <catalog-pkl>` (or `--importance-path`) before treating feature-plane ranks as authoritative. Importances = which inputs the model weights most (native `feature_importances_` / `|coef_|` / NB log-odds). They ground the feature plane and which columns matter for skew vs mix stories — not a causal proof alone. Rankings can carry **statistical bias** (correlated features, leakage, unstable splits); treat top-k as orientation, not sole RCA. |
 | **Bind roles** | Fill `column_roles` → `validate-views` again. |
 | **Second orientation** | Re-run health-audit after roles filled / topk written. |
-| **Discriminate** | `indago-investigate --list` → L1/L2; read `out/reports/<tool>.json`. Prefer falsification. Failed tool ≠ falsified claim. |
+| **Discriminate** | `indago-investigate --list` → L1/L2; read `out/reports/<tool>.json`. Prefer falsification **only with a discriminating measurement**. Failed / skipped / unloadable tool → claim `unknown` or `weakened`, never `falsified*`. |
 | **Close** | Write `judgment*` → `validate-judgment` until OK. |
 
 **Notes**
@@ -72,4 +72,4 @@ Use tools when you need the capability. Order below is a **suggested** pedagogy;
 - Without usable FrameViews (paths), health-audit / L1 exit with `views_required`.
 - Path-only Views → **partial** HA. Filled roles → **full** role-gated planes.
 - `UNKNOWN` is a valid close when evidence is thin. Inhibitors are first-class.
-- Model is required for a full pack; unloadable PKL is an ERROR — do not claim model health from a failed load.
+- Model is required for a full pack; unloadable PKL is an ERROR — do not claim model health from a failed load; leave `model_artifact` `unknown` until peek/load succeeds.

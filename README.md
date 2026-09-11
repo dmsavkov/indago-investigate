@@ -5,7 +5,7 @@
 Python **3.12+** · pip / uv · Apache-2.0 · [dmsavkov/indago-investigate](https://github.com/dmsavkov/indago-investigate)  
 Topics: `investigation` · `mlops` · `decision-systems` · `model-monitoring` · `python`
 
-[▶ Demo video — add link when recorded]
+[▶ Demo video](docs/assets/indago-demo.mp4) · [Alert ‖ judgment](#example)
 
 ---
 
@@ -72,20 +72,11 @@ Default bind is Views-required (`INDAGO_BIND=views`). Optional env: [`.env.examp
 
 ### Try an investigation on the demo
 
-The demo already has alert, CUR/REF, a loadable sklearn model, and pre-bound Views — enough to watch the loop end-to-end (not just smoke CLIs).
+Attach / open the case protocol (host: paste ACTIVATION), then run the loop from there:
 
-```bash
+```text
 # Open the case protocol (host: attach this folder / paste ACTIVATION)
 #   examples/demo_case/agent-instructions/README.md
-
-cd examples/demo_case
-indago-catalog .
-indago-investigate validate-views .
-indago-health-audit . --no-plots
-# read out/health_audit.md — note UNKNOWN planes and the score-shift story
-indago-investigate emit-judgment . --terminal INSUFFICIENT_EVIDENCE --action monitor_only
-indago-investigate validate-judgment .
-# then fill claims in out/judgment_* using agent-instructions/claim_tags.json
 ```
 
 ### Your own pack
@@ -132,7 +123,9 @@ my_case/
 
 ## Example
 
-*(Screenshot slot: alert ‖ judgment horizontal — drop file at `docs/assets/alert-judgment.png` when ready.)*
+![Alert and judgment side by side](docs/assets/alert-judgment.png)
+
+[▶ Full demo walkthrough (mp4)](docs/assets/indago-demo.mp4) — open the file on GitHub to play in-browser, or download.
 
 Full ledgers are long by design. On the demo, expect honest UNKNOWNs where optional evidence is absent — that is success, not failure.
 

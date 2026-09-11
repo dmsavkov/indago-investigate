@@ -88,15 +88,17 @@ def peek_model(case_root: Path | str, *, path: str) -> dict[str, Any]:
     size = p.stat().st_size if p.is_file() else None
     out: dict[str, Any] = {"ok": True, "path": str(p), "size": size, "load_ok": False}
     try:
-        import joblib
+        from indago_investigate.model_io import load_model_artifact
 
-        model = joblib.load(p)
+        model = load_model_artifact(p)
         out["load_ok"] = True
         n_feat = None
         if hasattr(model, "n_features_in_"):
             n_feat = int(model.n_features_in_)
         elif hasattr(model, "feature_name_") and model.feature_name_ is not None:
             n_feat = len(list(model.feature_name_))
+        elif hasattr(model, "base_estimator") and hasattr(model.base_estimator, "n_features_in_"):
+            n_feat = int(model.base_estimator.n_features_in_)
         elif isinstance(model, dict) and "feature_cols" in model:
             n_feat = len(model["feature_cols"])
         out["n_features"] = n_feat

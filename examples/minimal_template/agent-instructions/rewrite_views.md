@@ -88,7 +88,7 @@ REF default rules (when present for contrast) stay as a separate file — do not
 | Asset | What to do |
 |-------|------------|
 | Tables | FrameView `path_or_handle` + `column_roles` after peek. Formats: **parquet, csv, feather**. |
-| Model | ModelView → jailed path to trained joblib PKL. Native importances: `feature_importances_`, `|coef_|`, NB log-odds. Else `unsupported` (no permutation). |
+| Model | ModelView → jailed path to trained joblib PKL. Native importances (`feature_importances_`, `|coef_|`, NB log-odds) say which inputs the model weights most — needed so the feature plane ranks real columns; treat ranks as orientation (statistical bias possible). Else `unsupported` (no permutation). |
 | Offline score | Currently expects **parquet** + joblib pipeline the scorer can run. |
 
 ---
