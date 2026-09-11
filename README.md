@@ -5,7 +5,7 @@
 Python **3.12+** · pip / uv · Apache-2.0 · [dmsavkov/indago-investigate](https://github.com/dmsavkov/indago-investigate)  
 Topics: `investigation` · `mlops` · `decision-systems` · `model-monitoring` · `python`
 
-[▶ Demo video](https://github.com/dmsavkov/indago-investigate/releases/download/demo-media/indago-demo.mp4) · [Alert ‖ judgment](#example)
+<video src="https://github.com/user-attachments/assets/33b31a58-b484-461a-947a-da4f2247847b" controls width="600"></video>
 
 ---
 
@@ -124,8 +124,6 @@ my_case/
 ## Example
 
 ![Alert and judgment side by side](docs/assets/alert-judgment.png)
-
-https://github.com/dmsavkov/indago-investigate/releases/download/demo-media/indago-demo.mp4
 
 Full ledgers are long by design. On the demo, expect honest UNKNOWNs where optional evidence is absent — that is success, not failure.
 
